@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Flame, Droplet, Play, ArrowRight, ChevronDown, Sparkles, Leaf, ShieldCheck, Sun, Clock, Users, CheckCircle, Trash2, Sprout, Coffee, Heart, Zap, Globe, Award } from 'lucide-react';
 import { useInView } from '@/src/lib/animations';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+
+// Lazy load the heavy 3D component
+const Cup3D = React.lazy(() => import('./components/Cup3D'));
 
 // Floating people counter component
 const PeopleViewing = () => {
@@ -469,7 +472,7 @@ const DiscoverySection = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="inline-block bg-secondary/20 text-secondary px-4 py-1.5 rounded-full text-xs font-mono font-medium mb-6"
+            className="inline-block bg-secondary/20 backdrop-blur-sm text-secondary px-4 py-1.5 rounded-full text-xs font-mono font-medium mb-6 border border-secondary/30"
           >
             Nature's Blueprint
           </motion.span>
@@ -478,7 +481,7 @@ const DiscoverySection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="font-sora text-5xl sm:text-6xl lg:text-7xl font-bold text-primary mb-8"
+            className="font-sora text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-8"
           >
             We Didn't Invent<br/>
             <span className="text-secondary italic font-serif">We Rediscovered</span>
@@ -488,7 +491,7 @@ const DiscoverySection = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-xl text-on-surface-variant max-w-3xl mx-auto leading-relaxed"
+            className="text-xl text-white/70 max-w-3xl mx-auto leading-relaxed"
           >
             Ancient wisdom meets modern innovation. Four powerful ingredients, perfected by nature over millennia, now work in harmony to revolutionize how we drink.
           </motion.p>
@@ -573,13 +576,16 @@ const DiscoverySection = () => {
             </div>
             
             {/* Cup Assembly Visualization */}
-            <div className="relative aspect-square flex items-center justify-center">
+            <div className="relative aspect-square flex items-center justify-center min-h-[300px]">
+              {/* Glowing ingredient blobs (kept behind the Canvas) */}
               {[...Array(4)].map((_, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, scale: 0.5, rotate: i * 90 }}
-                  animate={inView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
-                  transition={{ duration: 0.8, delay: 1.2 + i * 0.2, type: "spring" }}
+                  // Use whileInView with once: true so they don't disappear on scroll
+                  whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.8, delay: 0.5 + i * 0.2, type: "spring" }}
                   className={`absolute w-32 h-32 rounded-full bg-gradient-to-br ${ingredients[i].color} opacity-60 blur-xl`}
                   style={{
                     transform: `translate(${(i - 1.5) * 60}px, ${(i - 1.5) * 60}px)`
@@ -587,13 +593,28 @@ const DiscoverySection = () => {
                 />
               ))}
               
+              {/* 3D Interactive Cup with Suspense for Lazy Loading */}
               <motion.div
-                initial={{ opacity: 0, scale: 0 }}
-                animate={inView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 1, delay: 2, type: "spring" }}
-                className="relative z-10 w-48 h-48 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center shadow-2xl"
+                initial={{ opacity: 0, scale: 0.8 }}
+                // Use whileInView with once: true so the 3D model stays loaded and visible
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 1, delay: 0.8 }}
+                className="relative z-10 w-full h-full aspect-square"
               >
-                <Coffee className="w-24 h-24 text-white" />
+                <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-primary/60 text-sm font-mono">Loading 3D preview...</div>}>
+                  <Cup3D className="w-full h-full" scale={1.2} enableDrag={true} />
+                </Suspense>
+                
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 1.5 }}
+                  className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] font-mono text-outline/60 uppercase tracking-widest pointer-events-none"
+                >
+                  Drag to rotate
+                </motion.p>
               </motion.div>
             </div>
           </div>
