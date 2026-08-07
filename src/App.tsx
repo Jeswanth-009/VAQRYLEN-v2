@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
-import { Flame, Droplet, Play, ArrowRight, ChevronDown, Sparkles, Leaf, ShieldCheck, Sun, Clock, Users, CheckCircle, Trash2, Sprout, Coffee, Heart, Zap, Globe, Award } from 'lucide-react';
+import { Flame, Droplet, ArrowRight, ChevronDown, Sparkles, Leaf, ShieldCheck, Sun, Clock, Users, CheckCircle, Trash2, Sprout, Coffee, Heart, Zap, Globe, Award } from 'lucide-react';
 import { useInView } from '@/src/lib/animations';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -39,7 +39,7 @@ const PeopleViewing = () => {
 };
 
 // Enhanced Hero with full-screen immersive design
-const Hero = ({ onExplore }: { onExplore: () => void }) => {
+const Hero = () => {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 500], [0, 150]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
@@ -129,7 +129,10 @@ const Hero = ({ onExplore }: { onExplore: () => void }) => {
               transition={{ duration: 0.6, delay: 0.5 }}
             >
               <motion.button
-                onClick={onExplore}
+                onClick={(() => {
+                  const el = document.getElementById('preorder');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                })}
                 whileHover={{ scale: 1.05, y: -3 }}
                 whileTap={{ scale: 0.97 }}
                 className="bg-primary text-on-primary px-10 py-4 rounded-full text-base font-medium transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-3"
@@ -139,12 +142,16 @@ const Hero = ({ onExplore }: { onExplore: () => void }) => {
               </motion.button>
 
               <motion.button
+                onClick={(() => {
+                  const el = document.getElementById('problem');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                })}
                 whileHover={{ scale: 1.05, y: -3 }}
                 whileTap={{ scale: 0.97 }}
                 className="bg-white/80 backdrop-blur-sm text-primary border-2 border-primary/20 px-10 py-4 rounded-full text-base font-medium transition-all duration-300 flex items-center gap-3 hover:bg-white"
               >
-                <Play className="w-4 h-4 text-secondary fill-secondary" />
-                <span>Watch Film</span>
+                <ChevronDown className="w-4 h-4 text-secondary" />
+                <span>Explore More</span>
               </motion.button>
             </motion.div>
           </motion.div>
@@ -1222,16 +1229,12 @@ const PreOrderCTA = () => {
 export default function App() {
   const featuresRef = React.useRef<HTMLDivElement>(null);
 
-  const scrollToFeatures = () => {
-    featuresRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <div className="min-h-screen flex flex-col relative overflow-x-hidden">
       <Navbar />
       
       <main className="flex-1 w-full">
-        <Hero onExplore={scrollToFeatures} />
+        <Hero />
         <EnemySection />
         <DiscoverySection />
         <RitualSection />
