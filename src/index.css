@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@theme {
+  --color-primary: #012d1d;
+  --color-primary-container: #1b4332;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #cce8d7;
+  --color-secondary: #805533;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #f3e3d2;
+  --color-on-secondary-container: #2a160e;
+  --color-secondary-fixed: #fff3ea;
+  --color-secondary-fixed-variant: #51351f;
+  --color-background: #fbf9f4;
+  --color-surface: #fbf9f4;
+  --color-surface-container: #f0eee9;
+  --color-surface-container-low: #f5f4ef;
+  --color-on-surface: #1b1c19;
+  --color-on-surface-variant: #414844;
+  --color-outline: #5e6661;
+  --color-outline-variant: #8b938d;
+
+  --font-sora: 'Sora', sans-serif;
+  --font-hanken: 'Hanken Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-hanken);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sora);
+}
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Custom utility for the soft shadow described in the design system */
+  .shadow-soft {
+    box-shadow: 0 8px 24px -4px rgba(1, 45, 29, 0.04);
+  }
+
+  /* Scrollbar styling for webkit browsers */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(1, 45, 29, 0.15);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(1, 45, 29, 0.25);
+  }
