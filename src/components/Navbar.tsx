@@ -3,10 +3,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Menu, ArrowRight } from 'lucide-react';
 
 const navLinks = [
-  { label: 'Craft', href: '#discovery' },
-  { label: 'Collection', href: '#design' },
   { label: 'Sustainability', href: '#problem' },
+  { label: 'Craft', href: '#discovery' },
   { label: 'Experience', href: '#ritual' },
+  { label: 'Collection', href: '#design' },
   { label: 'Pre-Order', href: '#preorder' },
 ];
 
