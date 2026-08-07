@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Menu, ArrowRight } from 'lucide-react';
 
 const navLinks = [
-  { label: 'The Craft', href: '#craft' },
-  { label: 'Collection', href: '#collection' },
-  { label: 'Sustainability', href: '#sustainability' },
-  { label: 'Our Story', href: '#our-story' },
-  { label: 'FAQ', href: '#faq' },
+  { label: 'Craft', href: '#discovery' },
+  { label: 'Collection', href: '#design' },
+  { label: 'Sustainability', href: '#problem' },
+  { label: 'Experience', href: '#ritual' },
+  { label: 'Pre-Order', href: '#preorder' },
 ];
 
 export default function Navbar() {

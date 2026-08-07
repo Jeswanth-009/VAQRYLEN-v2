@@ -168,10 +168,10 @@ export default function Footer() {
           
           <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8">
             {[
-              { label: 'Sustainability Report', href: '#' },
-              { label: 'Our Story', href: '#' },
-              { label: 'Wholesale', href: '#' },
-              { label: 'Contact Us', href: '#' }
+              { label: 'Sustainability', href: '#problem' },
+              { label: 'Our Story', href: '#discovery' },
+              { label: 'Wholesale', href: '#preorder' },
+              { label: 'Contact', href: '#preorder' }
             ].map((link, i) => (
               <motion.a 
                 key={link.label}
