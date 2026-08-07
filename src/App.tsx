@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useInView } from 'framer-motion';
+import { Flame, Droplet, Play, ArrowRight, ChevronDown, Sparkles, Leaf, ShieldCheck, Sun, Clock, Users, CheckCircle, Trash2, Sprout, Coffee, Heart, Zap, Globe, Award } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Flame, Droplet, Play, ArrowRight, ChevronDown, Sparkles, Leaf, ShieldCheck, Sun, Clock, Users, CheckCircle } from 'lucide-react';
 import { useInView } from '@/src/lib/animations';
@@ -239,6 +241,517 @@ const Hero = ({ onExplore }: { onExplore: () => void }) => {
         </motion.div>
       </div>
     </section>
+  );
+};
+
+// The Enemy Section - The Problem
+const EnemySection = () => {
+  const [ref, inView] = useInView({ threshold: 0.2 });
+  
+  return (
+    <motion.section
+      ref={ref as any}
+      className="py-32 lg:py-40 bg-gradient-to-b from-slate-900 via-slate-800 to-primary overflow-hidden relative"
+      id="problem"
+    >
+      {/* Animated background particles */}
+      {[...Array(30)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 bg-white/20 rounded-full"
+          initial={{ 
+            x: Math.random() * window.innerWidth, 
+            y: Math.random() * window.innerHeight,
+            opacity: 0 
+          }}
+          animate={{ 
+            y: [null, Math.random() * 100 + 50],
+            opacity: [0, 0.4, 0],
+            x: Math.random() * window.innerWidth
+          }}
+          transition={{ 
+            duration: Math.random() * 8 + 10, 
+            repeat: Infinity, 
+            ease: "linear",
+            delay: Math.random() * 3
+          }}
+        />
+      ))}
+      
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-10 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Left Content - Stark Statistics */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.8 }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={inView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="inline-flex items-center gap-2 bg-red-500/20 backdrop-blur-sm px-4 py-2 rounded-full mb-8 border border-red-500/30"
+            >
+              <Trash2 className="w-4 h-4 text-red-400" />
+              <span className="text-xs font-mono text-red-300 uppercase tracking-wider">The Hidden Crisis</span>
+            </motion.div>
+            
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="font-sora text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-8 leading-tight"
+            >
+              Every Minute,<br/>
+              <span className="text-red-400">1 Million</span> Plastic Cups<br/>
+              Enter Our Oceans
+            </motion.h2>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-lg text-slate-300 mb-12 leading-relaxed max-w-xl"
+            >
+              Single-use cups line our landfills, choke our marine life, and fragment into microplastics that enter our food chain. The convenience of today becomes the catastrophe of tomorrow.
+            </motion.p>
+            
+            {/* Animated Counter Stats */}
+            <div className="grid grid-cols-2 gap-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10"
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={inView ? { scale: 1 } : {}}
+                  transition={{ type: "spring", stiffness: 200, delay: 0.6 }}
+                  className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center mb-4"
+                >
+                  <Globe className="w-6 h-6 text-red-400" />
+                </motion.div>
+                <p className="text-3xl font-bold text-white mb-2">500B+</p>
+                <p className="text-sm text-slate-400">Cups used yearly</p>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10"
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={inView ? { scale: 1 } : {}}
+                  transition={{ type: "spring", stiffness: 200, delay: 0.7 }}
+                  className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center mb-4"
+                >
+                  <Clock className="w-6 h-6 text-red-400" />
+                </motion.div>
+                <p className="text-3xl font-bold text-white mb-2">450 Years</p>
+                <p className="text-sm text-slate-400">To decompose</p>
+              </motion.div>
+            </div>
+          </motion.div>
+          
+          {/* Right Content - Visual Impact */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 1, delay: 0.4 }}
+            className="relative"
+          >
+            <div className="relative aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 shadow-2xl border border-white/10">
+              {/* Abstract representation of plastic pollution */}
+              <div className="absolute inset-0 opacity-30">
+                {[...Array(50)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-2 h-2 bg-white/30 rounded-full"
+                    style={{
+                      left: `${Math.random() * 100}%`,
+                      top: `${Math.random() * 100}%`,
+                    }}
+                    animate={{
+                      scale: [1, 1.5, 1],
+                      opacity: [0.3, 0.6, 0.3],
+                    }}
+                    transition={{
+                      duration: Math.random() * 3 + 2,
+                      repeat: Infinity,
+                      delay: Math.random() * 2,
+                    }}
+                  />
+                ))}
+              </div>
+              
+              <div className="absolute inset-0 flex items-center justify-center">
+                <motion.div
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={inView ? { scale: 1, opacity: 1 } : {}}
+                  transition={{ duration: 1, delay: 0.8 }}
+                  className="text-center"
+                >
+                  <Trash2 className="w-32 h-32 text-red-400/50 mx-auto mb-6" />
+                  <p className="text-2xl font-bold text-white/80">This Stops Now</p>
+                </motion.div>
+              </div>
+            </div>
+            
+            {/* Floating quote */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 1 }}
+              className="absolute -bottom-8 -left-8 bg-primary/90 backdrop-blur-xl px-6 py-4 rounded-2xl shadow-2xl border border-white/20"
+            >
+              <p className="text-sm text-on-surface-variant italic">"We don't need a handful of people doing zero waste perfectly. We need millions doing it imperfectly."</p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+    </motion.section>
+  );
+};
+
+// The Discovery Section - Nature's Secret
+const DiscoverySection = () => {
+  const [ref, inView] = useInView({ threshold: 0.1 });
+  const { scrollYProgress } = useScroll();
+  const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  
+  const ingredients = [
+    { name: "Tamarind Seed Gum", icon: Leaf, desc: "Natural heat-resistant binder", color: "from-amber-500 to-orange-600" },
+    { name: "Rice Bran & Millet", icon: Sprout, desc: "Upcycled agricultural strength", color: "from-yellow-500 to-amber-600" },
+    { name: "Jaggery", icon: Sparkles, desc: "Natural sweetness & binding", color: "from-brown-500 to-amber-700" },
+    { name: "Coconut Fiber", icon: Globe, desc: "Sustainable structural support", color: "from-emerald-500 to-teal-600" },
+  ];
+  
+  return (
+    <motion.section
+      ref={ref as any}
+      className="py-32 lg:py-40 bg-gradient-to-b from-primary via-primary-container to-surface-container overflow-hidden relative"
+      id="discovery"
+    >
+      {/* Floating ingredient particles */}
+      {[...Array(15)].map((_, i) => (
+        <motion.div
+          key={i}
+          className={`absolute w-3 h-3 rounded-full bg-gradient-to-r ${ingredients[i % 4].color} opacity-20`}
+          initial={{ 
+            x: Math.random() * window.innerWidth, 
+            y: window.innerHeight + 50,
+            opacity: 0 
+          }}
+          animate={{ 
+            y: -window.innerHeight - 50,
+            opacity: [0, 0.2, 0],
+            rotate: 360
+          }}
+          transition={{ 
+            duration: Math.random() * 15 + 20, 
+            repeat: Infinity, 
+            ease: "linear",
+            delay: Math.random() * 10
+          }}
+        />
+      ))}
+      
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-10 relative z-10">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-20"
+        >
+          <motion.span
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="inline-block bg-secondary/20 text-secondary px-4 py-1.5 rounded-full text-xs font-mono font-medium mb-6"
+          >
+            Nature's Blueprint
+          </motion.span>
+          
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="font-sora text-5xl sm:text-6xl lg:text-7xl font-bold text-primary mb-8"
+          >
+            We Didn't Invent<br/>
+            <span className="text-secondary italic font-serif">We Rediscovered</span>
+          </motion.h2>
+          
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-xl text-on-surface-variant max-w-3xl mx-auto leading-relaxed"
+          >
+            Ancient wisdom meets modern innovation. Four powerful ingredients, perfected by nature over millennia, now work in harmony to revolutionize how we drink.
+          </motion.p>
+        </motion.div>
+        
+        {/* Interactive Ingredient Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+          {ingredients.map((ingredient, index) => (
+            <motion.div
+              key={ingredient.name}
+              initial={{ opacity: 0, y: 50 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
+              whileHover={{ y: -10, scale: 1.02 }}
+              className="group relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/40 overflow-hidden"
+            >
+              {/* Gradient background on hover */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${ingredient.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+              
+              <motion.div
+                className={`w-16 h-16 bg-gradient-to-br ${ingredient.color} rounded-2xl flex items-center justify-center mb-6 shadow-lg`}
+                whileHover={{ rotate: 10, scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <ingredient.icon className="w-8 h-8 text-white" />
+              </motion.div>
+              
+              <h3 className="font-sora text-xl font-bold text-primary mb-3">{ingredient.name}</h3>
+              <p className="text-on-surface-variant text-sm leading-relaxed">{ingredient.desc}</p>
+              
+              {/* Decorative circle */}
+              <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-gradient-to-br from-secondary/5 to-transparent rounded-full" />
+            </motion.div>
+          ))}
+        </div>
+        
+        {/* Assembly Animation Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 1, delay: 0.8 }}
+          className="relative bg-white/60 backdrop-blur-md rounded-3xl p-12 shadow-xl border border-white/40 overflow-hidden"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <motion.h3
+                initial={{ opacity: 0, x: -20 }}
+                animate={inView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.9 }}
+                className="font-sora text-3xl font-bold text-primary mb-6"
+              >
+                From Earth to Cup
+              </motion.h3>
+              <motion.p
+                initial={{ opacity: 0, x: -20 }}
+                animate={inView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.6, delay: 1 }}
+                className="text-on-surface-variant mb-8 leading-relaxed"
+              >
+                Each ingredient is sustainably sourced from regenerative farms. Together, they create a vessel that's stronger than plastic, safer than paper, and completely edible.
+              </motion.p>
+              
+              <div className="space-y-4">
+                {[
+                  { step: "01", text: "Harvested from nature" },
+                  { step: "02", text: "Blended with precision" },
+                  { step: "03", text: "Molded into perfection" },
+                  { step: "04", text: "Ready to transform your ritual" }
+                ].map((item, index) => (
+                  <motion.div
+                    key={item.step}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={inView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ duration: 0.5, delay: 1.1 + index * 0.1 }}
+                    className="flex items-center gap-4"
+                  >
+                    <span className="text-2xl font-bold text-secondary/30 font-mono">{item.step}</span>
+                    <span className="text-primary font-medium">{item.text}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Cup Assembly Visualization */}
+            <div className="relative aspect-square flex items-center justify-center">
+              {[...Array(4)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.5, rotate: i * 90 }}
+                  animate={inView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
+                  transition={{ duration: 0.8, delay: 1.2 + i * 0.2, type: "spring" }}
+                  className={`absolute w-32 h-32 rounded-full bg-gradient-to-br ${ingredients[i].color} opacity-60 blur-xl`}
+                  style={{
+                    transform: `translate(${(i - 1.5) * 60}px, ${(i - 1.5) * 60}px)`
+                  }}
+                />
+              ))}
+              
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={inView ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 1, delay: 2, type: "spring" }}
+                className="relative z-10 w-48 h-48 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center shadow-2xl"
+              >
+                <Coffee className="w-24 h-24 text-white" />
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </motion.section>
+  );
+};
+
+// The Ritual Section - Experience & Quote
+const RitualSection = () => {
+  const [ref, inView] = useInView({ threshold: 0.2 });
+  
+  return (
+    <motion.section
+      ref={ref as any}
+      className="py-32 lg:py-40 relative overflow-hidden"
+      id="ritual"
+    >
+      {/* Video Background */}
+      <div className="absolute inset-0 z-0">
+        <video
+          src="/assets/Guests_laughing_at_hotel_rooftop_202608070450.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover opacity-30"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-surface-container/80 via-surface-container/60 to-surface-container/90" />
+      </div>
+      
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-10 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Quote Section */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.8 }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={inView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="inline-flex items-center gap-2 bg-secondary/20 backdrop-blur-sm px-4 py-2 rounded-full mb-8 border border-secondary/30"
+            >
+              <Heart className="w-4 h-4 text-secondary" />
+              <span className="text-xs font-mono text-secondary uppercase tracking-wider">The Complete Experience</span>
+            </motion.div>
+            
+            <motion.blockquote
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="mb-12"
+            >
+              <p className="font-serif text-4xl sm:text-5xl lg:text-6xl text-primary leading-tight mb-8">
+                "It starts with a <span className="text-secondary italic">sip</span>,<br/>
+                and ends with a <span className="text-secondary italic">smile</span>."
+              </p>
+              <footer className="flex items-center gap-4">
+                <div className="w-12 h-1 bg-secondary rounded-full" />
+                <span className="text-on-surface-variant font-medium">The Vaqrylen Ritual</span>
+              </footer>
+            </motion.blockquote>
+            
+            {/* Experience Steps */}
+            <div className="space-y-6">
+              {[
+                { icon: Coffee, title: "Sip", desc: "Enjoy your hot beverage at the perfect temperature for 45 minutes" },
+                { icon: Heart, title: "Savor", desc: "Notice the subtle, natural flavors emerging as the cup softens" },
+                { icon: Leaf, title: "Sustain", desc: "Finish your cup completely—zero waste, pure satisfaction" }
+              ].map((step, index) => (
+                <motion.div
+                  key={step.title}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={inView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.6, delay: 0.5 + index * 0.15 }}
+                  className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white/50 transition-colors duration-300"
+                >
+                  <motion.div
+                    className="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <step.icon className="w-6 h-6 text-secondary" />
+                  </motion.div>
+                  <div>
+                    <h4 className="font-sora text-lg font-bold text-primary mb-1">{step.title}</h4>
+                    <p className="text-on-surface-variant text-sm">{step.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+          
+          {/* Visual Element */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 1, delay: 0.4 }}
+            className="relative"
+          >
+            <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/30">
+              <img
+                src="/assets/cup.jpeg"
+                alt="Vaqrylen cup experience"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/40 via-transparent to-transparent" />
+              
+              {/* Overlay badges */}
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                animate={inView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.8 }}
+                className="absolute top-6 right-6 bg-white/90 backdrop-blur-md px-4 py-3 rounded-2xl shadow-lg"
+              >
+                <div className="flex items-center gap-2">
+                  <Award className="w-5 h-5 text-secondary" />
+                  <span className="text-sm font-bold text-primary">100% Edible</span>
+                </div>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                animate={inView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.6, delay: 1 }}
+                className="absolute bottom-6 left-6 bg-white/90 backdrop-blur-md px-4 py-3 rounded-2xl shadow-lg"
+              >
+                <div className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-secondary" />
+                  <span className="text-sm font-bold text-primary">45 Min Heat Lock</span>
+                </div>
+              </motion.div>
+            </div>
+            
+            {/* Floating testimonial card */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 1.2 }}
+              className="absolute -bottom-8 -right-8 bg-white/95 backdrop-blur-xl px-6 py-5 rounded-2xl shadow-2xl border border-white/40 max-w-xs"
+            >
+              <div className="flex items-center gap-1 mb-3">
+                {[...Array(5)].map((_, i) => (
+                  <Sparkles key={i} className="w-4 h-4 text-secondary fill-secondary" />
+                ))}
+              </div>
+              <p className="text-sm text-on-surface-variant italic mb-3">"I couldn't believe it. Hot coffee for 45 minutes, then I ate the cup. Mind blown!"</p>
+              <p className="text-xs font-mono text-outline uppercase">— Early Tester</p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+    </motion.section>
   );
 };
 
@@ -700,6 +1213,9 @@ export default function App() {
       
       <main className="flex-1 w-full">
         <Hero onExplore={scrollToFeatures} />
+        <EnemySection />
+        <DiscoverySection />
+        <RitualSection />
         
         <div ref={featuresRef}>
           <Features />
