@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useSpring, useInView } from 'framer-motion';
-import { Flame, Droplet, Play, ArrowRight, ChevronDown, Sparkles, Leaf, ShieldCheck, Sun, Clock, Users, CheckCircle, Trash2, Sprout, Coffee, Heart, Zap, Globe, Award } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
-import { Flame, Droplet, Play, ArrowRight, ChevronDown, Sparkles, Leaf, ShieldCheck, Sun, Clock, Users, CheckCircle } from 'lucide-react';
+import { Flame, Droplet, Play, ArrowRight, ChevronDown, Sparkles, Leaf, ShieldCheck, Sun, Clock, Users, CheckCircle, Trash2, Sprout, Coffee, Heart, Zap, Globe, Award } from 'lucide-react';
 import { useInView } from '@/src/lib/animations';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -246,7 +244,7 @@ const Hero = ({ onExplore }: { onExplore: () => void }) => {
 
 // The Enemy Section - The Problem
 const EnemySection = () => {
-  const [ref, inView] = useInView({ threshold: 0.2 });
+  const [ref, inView] = useInView(0.2);
   
   return (
     <motion.section
@@ -418,7 +416,7 @@ const EnemySection = () => {
 
 // The Discovery Section - Nature's Secret
 const DiscoverySection = () => {
-  const [ref, inView] = useInView({ threshold: 0.1 });
+  const [ref, inView] = useInView(0.1);
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
   
@@ -607,7 +605,7 @@ const DiscoverySection = () => {
 
 // The Ritual Section - Experience & Quote
 const RitualSection = () => {
-  const [ref, inView] = useInView({ threshold: 0.2 });
+  const [ref, inView] = useInView(0.2);
   
   return (
     <motion.section
