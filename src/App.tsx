@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Flame, Droplet, Play, ArrowRight, ChevronDown, Sparkles, Leaf, ShieldCheck, Sun, Clock, Users, CheckCircle } from 'lucide-react';
+import { useInView } from '@/src/lib/animations';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -243,7 +244,7 @@ const Hero = ({ onExplore }: { onExplore: () => void }) => {
 
 // Bento Grid Features Section
 const Features = () => {
-  const [ref, inView] = useInView({ threshold: 0.1 });
+  const [ref, inView] = useInView(0.1);
 
   return (
     <motion.section
@@ -466,10 +467,10 @@ const Variants = () => {
     }
   ];
 
-  const [ref, inView] = useInView({ threshold: 0.1 });
+  const [ref, inView] = useInView(0.2);
 
   return (
-    <motion.section 
+    <motion.section
       ref={ref as any}
       className="py-32 lg:py-40 bg-gradient-to-b from-surface-container to-background"
       id="design"
@@ -578,7 +579,7 @@ const Variants = () => {
 
 // Pre-order CTA Section with urgency
 const PreOrderCTA = () => {
-  const [ref, inView] = useInView({ threshold: 0.2 });
+  const [ref, inView] = useInView(0.2);
 
   return (
     <motion.section
