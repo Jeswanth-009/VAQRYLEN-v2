@@ -1,11 +1,29 @@
-import React, { Suspense, useRef } from 'react';
+import React, { Suspense, useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useGLTF, Environment, PresentationControls, ContactShadows, Html } from '@react-three/drei';
+import { Environment, PresentationControls, ContactShadows, Html } from '@react-three/drei';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { motion } from 'framer-motion';
+
+// Draco-compressed model (90% smaller than the original 12.9 MB glTF).
+// Decoder files are self-hosted under /draco/ to avoid external CDN deps.
+const MODEL_URL = '/assets/models/cup-optimized.glb';
+const DRACO_DECODER_PATH = '/draco/';
+
+let dracoLoader: DRACOLoader | null = null;
+
+function getDracoLoader(): DRACOLoader {
+  if (!dracoLoader) {
+    dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath(DRACO_DECODER_PATH);
+  }
+  return dracoLoader;
+}
 
 // The actual 3D model
 function CupModel(props: any) {
-  const { scene } = useGLTF('/assets/models/cup-optimized.glb');
+  const [scene, setScene] = useState<any>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const ref = useRef<any>(null);
 
   // Gentle auto-rotation when not being dragged
@@ -15,19 +33,43 @@ function CupModel(props: any) {
     }
   });
 
-  return <primitive ref={ref} object={scene} {...props} />;
-}
+  useEffect(() => {
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.setDRACOLoader(getDracoLoader());
 
-// Simple loading fallback shown while model loads
-function Loader() {
-  return (
-    <Html center>
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-2 border-secondary border-t-transparent rounded-full animate-spin" />
-        <p className="text-xs text-white/60 font-mono">Loading model...</p>
-      </div>
-    </Html>
-  );
+    gltfLoader.load(
+      MODEL_URL,
+      (gltf) => setScene(gltf.scene),
+      undefined,
+      (error: Error) => {
+        console.error('Failed to load cup model:', error);
+        setLoadError(error.message);
+      },
+    );
+  }, []);
+
+  if (loadError) {
+    return (
+      <Html center>
+        <div className="text-xs text-red-400 font-mono text-center">
+          3D preview unavailable
+        </div>
+      </Html>
+    );
+  }
+
+  if (!scene) {
+    return (
+      <Html center>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-secondary border-t-transparent rounded-full animate-spin" />
+          <p className="text-xs text-white/60 font-mono">Loading model...</p>
+        </div>
+      </Html>
+    );
+  }
+
+  return <primitive ref={ref} object={scene} {...props} />;
 }
 
 interface Cup3DProps {
@@ -45,7 +87,7 @@ const Cup3D = ({ className = '', scale = 1, autoRotate = true, enableDrag = true
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
       >
-        <Suspense fallback={<Loader />}>
+        <Suspense fallback={null}>
           {/* Lighting setup */}
           <ambientLight intensity={0.6} />
           <spotLight position={[5, 5, 5]} angle={0.3} penumbra={1} intensity={1.2} castShadow />
@@ -82,11 +124,5 @@ const Cup3D = ({ className = '', scale = 1, autoRotate = true, enableDrag = true
     </div>
   );
 };
-
-// Preload the optimized (Draco-compressed) model so it's cached and ready.
-// This only runs once the component module is dynamically imported (which is
-// itself gated by IntersectionObserver in App.tsx), so the 3D asset is never
-// fetched until the viewer enters the viewport.
-useGLTF.preload('/assets/models/cup-optimized.glb');
 
 export default Cup3D;

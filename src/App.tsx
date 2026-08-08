@@ -4,6 +4,7 @@ import { Flame, Droplet, ArrowRight, ChevronDown, Sparkles, Leaf, ShieldCheck, S
 import { useInView } from '@/src/lib/animations';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Lazy load the heavy 3D component
 const Cup3D = React.lazy(() => import('./components/Cup3D'));
@@ -600,42 +601,45 @@ const DiscoverySection = () => {
                 />
               ))}
               
-              {/* Lightweight poster placeholder — shown until the 3D viewer enters
-                  the viewport. Being a 52 KB JPEG this keeps LCP cheap compared
-                  to the Draco-compressed 3D model. */}
-              {!inView && (
-                <img
-                  src="/assets/cup.jpeg"
-                  alt="Cup preview"
-                  className="absolute inset-0 w-full h-full object-contain opacity-40"
-                  loading="lazy"
-                  decoding="async"
-                />
-              )}
+              {/* Lightweight poster placeholder — always visible so the area is
+                  never empty. The 3D canvas uses alpha:true (transparent) so
+                  the poster shows through while the Draco model downloads. */}
+              <img
+                src="/assets/cup.jpeg"
+                alt="Cup preview"
+                className="absolute inset-0 w-full h-full object-contain opacity-30"
+                loading="lazy"
+                decoding="async"
+              />
 
-              {/* 3D Interactive Cup — the heavy three.js stack (fiber + drei +
-                  Draco model) is only fetched once the section is in view. */}
+              {/* 3D Interactive Cup — lazy-loaded only when scrolled into view.
+                  The heavy three.js stack (fiber + drei + Draco model) is
+                  fetched just-in-time via React.lazy + IntersectionObserver. */}
               {inView && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 1 }}
-                  className="relative z-10 w-full h-full aspect-square"
+                <ErrorBoundary
+                  fallback={
+                    <img
+                      src="/assets/cup.jpeg"
+                      alt="Cup preview"
+                      className="absolute inset-0 w-full h-full object-contain opacity-30"
+                    />
+                  }
                 >
-                  <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-primary/60 text-sm font-mono">Loading 3D preview...</div>}>
-                    <Cup3D className="w-full h-full" scale={1.2} enableDrag={true} />
+                  <Suspense fallback={null}>
+                    <Cup3D className="absolute inset-0 w-full h-full" scale={1.2} enableDrag={true} />
                   </Suspense>
-
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                    className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] font-mono text-outline/60 uppercase tracking-widest pointer-events-none"
-                  >
-                    Drag to rotate
-                  </motion.p>
-                </motion.div>
+                </ErrorBoundary>
               )}
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5 }}
+                className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] font-mono text-outline/60 uppercase tracking-widest pointer-events-none"
+              >
+                Drag to rotate
+              </motion.p>
             </div>
           </div>
         </motion.div>
@@ -1021,6 +1025,11 @@ const Variants = () => {
 
   const [ref, inView] = useInView(0.2);
 
+  const scrollToPreorder = () => {
+    const el = document.getElementById('preorder');
+    el?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <motion.section
       ref={ref as any}
@@ -1063,6 +1072,7 @@ const Variants = () => {
               transition={{ duration: 0.7, delay: 0.1 + index * 0.1 }}
               className="group cursor-pointer relative"
               whileHover={{ y: -16, scale: 1.02 }}
+              onClick={scrollToPreorder}
             >
               {/* Card */}
               <div className={`bg-gradient-to-br ${variant.color} rounded-3xl p-5 shadow-lg hover:shadow-2xl transition-all duration-500 h-full flex flex-col`}>
@@ -1106,6 +1116,7 @@ const Variants = () => {
                     </p>
                     
                     <motion.button 
+                      onClick={scrollToPreorder}
                       className="w-full bg-primary text-white py-3.5 rounded-full text-xs font-semibold tracking-[0.15em] uppercase transition-colors duration-300 flex items-center justify-center gap-2 group/btn"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.96 }}
