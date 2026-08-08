@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Flame, Droplet, ArrowRight, ChevronDown, Sparkles, Leaf, ShieldCheck, Sun, Clock, Users, CheckCircle, Trash2, Sprout, Coffee, Heart, Zap, Globe, Award } from 'lucide-react';
 import { useInView } from '@/src/lib/animations';
+import { submitWaitlist } from './lib/forms';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -1143,6 +1144,21 @@ const Variants = () => {
 // Pre-order CTA Section with urgency
 const PreOrderCTA = () => {
   const [ref, inView] = useInView(0.2);
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || status === 'submitting') return;
+    setStatus('submitting');
+    try {
+      await submitWaitlist({ email: email.trim(), source: 'preorder-waitlist', timestamp: new Date().toISOString() });
+      setStatus('success');
+      setEmail('');
+    } catch {
+      setStatus('error');
+    }
+  };
 
   return (
     <motion.section
@@ -1204,25 +1220,42 @@ const PreOrderCTA = () => {
           </motion.p>
 
           {/* Form */}
-          <motion.div 
+          <motion.form 
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto mb-8"
+            onSubmit={handleSubmit}
+            className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto mb-4"
           >
             <input 
               type="email" 
+              required
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); setStatus('idle'); }}
               placeholder="Enter your email"
               className="flex-1 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-6 py-4 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
             />
             <motion.button 
+              type="submit"
+              disabled={status === 'submitting'}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              className="bg-white text-primary px-8 py-4 rounded-full font-semibold whitespace-nowrap hover:bg-white/90 transition-colors"
+              className="bg-white text-primary px-8 py-4 rounded-full font-semibold whitespace-nowrap hover:bg-white/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Join Waitlist
+              {status === 'submitting' ? 'Joining...' : 'Join Waitlist'}
             </motion.button>
-          </motion.div>
+          </motion.form>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            transition={{ delay: 0.6 }}
+            className={`mb-4 text-sm font-medium ${status === 'error' ? 'text-red-300' : status === 'success' ? 'text-secondary-container' : ''}`}
+            aria-live="polite"
+          >
+            {status === 'success' && 'You\'re on the list! Check your inbox for updates.'}
+            {status === 'error' && 'Something went wrong. Please try again or email us directly.'}
+          </motion.p>
 
           {/* Trust indicators */}
           <motion.div 

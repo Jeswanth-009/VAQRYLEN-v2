@@ -51,6 +51,14 @@ export default function Navbar() {
     }
   };
 
+  const scrollToFooterForm = () => {
+    setMobileOpen(false);
+    const el = document.getElementById('sample-request-form');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
   return (
     <>
       <motion.nav
@@ -129,6 +137,7 @@ export default function Navbar() {
             {/* CTA Button */}
             <div className="hidden md:block">
               <motion.button
+                onClick={scrollToFooterForm}
                 whileHover={{ 
                   scale: 1.03, 
                   y: -1,
@@ -215,6 +224,7 @@ export default function Navbar() {
                 </motion.button>
               ))}
               <motion.button
+                onClick={scrollToFooterForm}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}

@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "VAQRYLEN-v2",
+  "description": "Vaqrylen — the world's first multi-use edible cup. Marketing landing page for pre-orders and wholesale inquiries.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }

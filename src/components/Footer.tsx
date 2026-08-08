@@ -1,10 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Leaf, Droplet, ShieldCheck, ChevronDown, Send } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useInView } from '@/src/lib/animations';
+import { submitInquiry } from '@/src/lib/forms';
 
 export default function Footer() {
   const [ref, isInView] = useInView(0.1);
+  const [form, setForm] = useState({ name: '', email: '', type: 'Wholesale Order' });
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+  const handleChange = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    setStatus('idle');
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.email.trim() || status === 'submitting') return;
+    setStatus('submitting');
+    try {
+      await submitInquiry({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        inquiryType: form.type,
+        timestamp: new Date().toISOString(),
+      });
+      setStatus('success');
+      setForm({ name: '', email: '', type: 'Wholesale Order' });
+    } catch {
+      setStatus('error');
+    }
+  };
 
   return (
     <motion.footer 
@@ -77,6 +103,7 @@ export default function Footer() {
             transition={{ duration: 0.7, delay: 0.2 }}
           >
             <motion.div 
+              id="sample-request-form"
               className="bg-primary-container p-8 rounded-3xl w-full max-w-md border border-on-primary/10"
               whileHover={{ 
                 scale: 1.02,
@@ -84,7 +111,7 @@ export default function Footer() {
               }}
               transition={{ type: "spring", stiffness: 100, damping: 20 }}
             >
-              <form className="flex flex-col gap-5">
+              <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
                 <motion.div 
                   className="flex flex-col gap-1.5"
                   initial={{ opacity: 0, x: -20 }}
@@ -95,6 +122,9 @@ export default function Footer() {
                   <input 
                     type="text" 
                     id="name"
+                    required
+                    value={form.name}
+                    onChange={(e) => handleChange('name', e.target.value)}
                     placeholder="Cafe or Business Name"
                     className="bg-white px-4 py-3 rounded-lg text-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent placeholder:text-outline-variant transition-all"
                   />
@@ -109,6 +139,9 @@ export default function Footer() {
                   <input 
                     type="email" 
                     id="email"
+                    required
+                    value={form.email}
+                    onChange={(e) => handleChange('email', e.target.value)}
                     placeholder="hello@example.com"
                     className="bg-white px-4 py-3 rounded-lg text-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent placeholder:text-outline-variant transition-all"
                   />
@@ -123,6 +156,8 @@ export default function Footer() {
                   <div className="relative">
                     <select 
                       id="type"
+                      value={form.type}
+                      onChange={(e) => handleChange('type', e.target.value)}
                       className="bg-white px-4 py-3 rounded-lg text-on-surface text-sm w-full appearance-none focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all"
                     >
                       <option>Wholesale Order</option>
@@ -134,7 +169,8 @@ export default function Footer() {
                 </motion.div>
                 <motion.button 
                   type="submit" 
-                  className="mt-2 bg-secondary text-on-secondary py-3.5 rounded-lg font-semibold hover:bg-[#6b472a] transition-colors shadow-soft flex items-center justify-center gap-2"
+                  disabled={status === 'submitting'}
+                  className="mt-2 bg-secondary text-on-secondary py-3.5 rounded-lg font-semibold hover:bg-[#6b472a] transition-colors shadow-soft flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.5, delay: 0.6 }}
@@ -145,8 +181,18 @@ export default function Footer() {
                   whileTap={{ scale: 0.97 }}
                 >
                   <Send className="w-4 h-4" />
-                  Request Samples
+                  {status === 'submitting' ? 'Sending...' : 'Request Samples'}
                 </motion.button>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+                  transition={{ duration: 0.5, delay: 0.7 }}
+                  className={`text-sm font-medium ${status === 'error' ? 'text-red-300' : status === 'success' ? 'text-secondary-container' : ''}`}
+                  aria-live="polite"
+                >
+                  {status === 'success' && 'Thanks! We\'ll get back to you shortly.'}
+                  {status === 'error' && 'Something went wrong. Please try again.'}
+                </motion.p>
               </form>
             </motion.div>
           </motion.div>
