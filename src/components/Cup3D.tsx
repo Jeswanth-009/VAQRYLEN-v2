@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 // The actual 3D model
 function CupModel(props: any) {
-  const { scene } = useGLTF('/assets/models/cup.glb');
+  const { scene } = useGLTF('/assets/models/cup-optimized.glb');
   const ref = useRef<any>(null);
 
   // Gentle auto-rotation when not being dragged
@@ -83,7 +83,10 @@ const Cup3D = ({ className = '', scale = 1, autoRotate = true, enableDrag = true
   );
 };
 
-// Preload the model so it's cached and ready
-useGLTF.preload('/assets/models/cup.glb');
+// Preload the optimized (Draco-compressed) model so it's cached and ready.
+// This only runs once the component module is dynamically imported (which is
+// itself gated by IntersectionObserver in App.tsx), so the 3D asset is never
+// fetched until the viewer enters the viewport.
+useGLTF.preload('/assets/models/cup-optimized.glb');
 
 export default Cup3D;

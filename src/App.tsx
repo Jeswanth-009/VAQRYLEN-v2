@@ -600,29 +600,42 @@ const DiscoverySection = () => {
                 />
               ))}
               
-              {/* 3D Interactive Cup with Suspense for Lazy Loading */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                // Use whileInView with once: true so the 3D model stays loaded and visible
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 1, delay: 0.8 }}
-                className="relative z-10 w-full h-full aspect-square"
-              >
-                <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-primary/60 text-sm font-mono">Loading 3D preview...</div>}>
-                  <Cup3D className="w-full h-full" scale={1.2} enableDrag={true} />
-                </Suspense>
-                
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 1.5 }}
-                  className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] font-mono text-outline/60 uppercase tracking-widest pointer-events-none"
+              {/* Lightweight poster placeholder — shown until the 3D viewer enters
+                  the viewport. Being a 52 KB JPEG this keeps LCP cheap compared
+                  to the Draco-compressed 3D model. */}
+              {!inView && (
+                <img
+                  src="/assets/cup.jpeg"
+                  alt="Cup preview"
+                  className="absolute inset-0 w-full h-full object-contain opacity-40"
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
+
+              {/* 3D Interactive Cup — the heavy three.js stack (fiber + drei +
+                  Draco model) is only fetched once the section is in view. */}
+              {inView && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 1 }}
+                  className="relative z-10 w-full h-full aspect-square"
                 >
-                  Drag to rotate
-                </motion.p>
-              </motion.div>
+                  <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-primary/60 text-sm font-mono">Loading 3D preview...</div>}>
+                    <Cup3D className="w-full h-full" scale={1.2} enableDrag={true} />
+                  </Suspense>
+
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                    className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] font-mono text-outline/60 uppercase tracking-widest pointer-events-none"
+                  >
+                    Drag to rotate
+                  </motion.p>
+                </motion.div>
+              )}
             </div>
           </div>
         </motion.div>
